@@ -1,10 +1,16 @@
+/* Drew Schlesener
+ * Denton Jarvis
+ * Kevin Cunningham
+ *
+ * 
+*/
 #include <iostream>
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <cstdio>
 #include <fstream>
-#include <boost/process.hpp>
+#include <boost/process.hpp> // -lboost_system -lpthread
 using namespace std;
 
 namespace bp = boost::process;
@@ -21,8 +27,7 @@ int main(int argc, char** argv) {
     char buffer[20];
     char buffer2[100];
     snprintf(buffer, sizeof(buffer), "sinfo_%s.json", argv[1]);
-
-    // Open the sinfo JSON file (produced with: sinfo --json > sinfo.json)
+ 
     snprintf(buffer2, sizeof(buffer2), "sinfo --json > %s", buffer);
     system(buffer2);
 
@@ -49,7 +54,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // Map partition name -> its info
+    // Map partition name to its info
     std::unordered_map<std::string, PartitionInfo> partitions;
 
     for (const auto& entry : doc["sinfo"].GetArray()) {
@@ -88,7 +93,7 @@ int main(int argc, char** argv) {
     for (const auto& [partName, info] : partitions) {
         std::cout << "Partition: " << partName << "\n";
         std::cout << "  Idle nodes: " << info.idle_nodes << "\n";
-
+        //write node names to node_names.txt
         for (const auto& n : info.node_names) {
             myfile << "    " << n << "\n";
         }

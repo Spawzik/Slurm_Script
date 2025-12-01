@@ -1,5 +1,9 @@
+/* Drew Schlesener
+ * Denton Jarvis
+ * Kevin Cunningham
+*/
 #include <iostream>
-#include <boost/process.hpp>
+#include <boost/process.hpp> // -lboost_system -lpthread
 #include <string>
 using namespace std;
 
@@ -11,11 +15,9 @@ int main(int argc, char** argv)
     for (int i = 0; i < atoi(argv[1]); i++)
     {
         snprintf(buffer, sizeof(buffer), "./parser %d", i);
-        // printf("%s", buffer);
         bp::ipstream pipe_stream;
         std::string sBuffer = buffer;
-        // std::cout << sBuffer << std::endl;
-        bp::child c(sBuffer, bp::std_out > pipe_stream);
+        bp::child Process(sBuffer, bp::std_out > pipe_stream);
 
         std::string line;
         while (pipe_stream && std::getline(pipe_stream, line) && !line.empty()) 
@@ -23,8 +25,8 @@ int main(int argc, char** argv)
             std::cout << line << std::endl;
         }
 
-        c.wait();
-        std::cout << "Exit code: " << c.exit_code() << std::endl;
+        Process.wait();
+        std::cout << "Exit code: " << Process.exit_code() << std::endl;
     }
     
     return 0;
